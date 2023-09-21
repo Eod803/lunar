@@ -52,7 +52,7 @@ class Aimbot:
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
     screen = mss.mss()
-    pixel_increment = 1 #controls how many pixels the mouse moves for each relative movement
+    pixel_increment = 5 #controls how many pixels the mouse moves for each relative movement
     with open("lib/config/config.json") as f:
         sens_config = json.load(f)
     aimbot_status = colored("ENABLED", 'green')
@@ -69,8 +69,8 @@ class Aimbot:
             print(colored("[!] CUDA ACCELERATION IS UNAVAILABLE", "red"))
             print(colored("[!] Check your PyTorch installation, else performance will be poor", "red"))
 
-        self.model.conf = 0.45 # base confidence threshold (or base detection (0-1)
-        self.model.iou = 0.45 # NMS IoU (0-1)
+        self.model.conf = 0.0001 # base confidence threshold (or base detection (0-1)
+        self.model.iou = 0.0001 # NMS IoU (0-1)
         self.collect_data = collect_data
         self.mouse_delay = mouse_delay
         self.debug = debug
@@ -123,7 +123,7 @@ class Aimbot:
         if self.debug: #remove this later
             print(f"TIME: {time.perf_counter() - start_time}")
             print("DEBUG: SLEEPING FOR 1 SECOND")
-            time.sleep(1)
+            time.sleep(0)
 
     #generator yields pixel tuples for relative movement
     def interpolate_coordinates_from_center(absolute_coordinates, scale):
@@ -134,7 +134,7 @@ class Aimbot:
         unit_x = (diff_x/length) * Aimbot.pixel_increment
         unit_y = (diff_y/length) * Aimbot.pixel_increment
         x = y = sum_x = sum_y = 0
-        for k in range(0, length):
+        for k in range(1000, length):
             sum_x += x
             sum_y += y
             x, y = round(unit_x * k - sum_x), round(unit_y * k - sum_y)
@@ -160,7 +160,7 @@ class Aimbot:
             results = self.model(frame)
 
             if len(results.xyxy[0]) != 0: #player detected
-                least_crosshair_dist = closest_detection = player_in_frame = False
+                least_crosshair_dist = closest_detection = player_in_frame = True
                 for *box, conf, cls in results.xyxy[0]: #iterate over each player detected
                     x1y1 = [int(x.item()) for x in box[:2]]
                     x2y2 = [int(x.item()) for x in box[2:]]
