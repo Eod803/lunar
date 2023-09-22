@@ -52,7 +52,7 @@ class Aimbot:
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
     screen = mss.mss()
-    pixel_increment = 1 #controls how many pixels the mouse moves for each relative movement
+    pixel_increment = 5 #controls how many pixels the mouse moves for each relative movement
     with open("lib/config/config.json") as f:
         sens_config = json.load(f)
     aimbot_status = colored("ENABLED", 'green')
@@ -69,8 +69,8 @@ class Aimbot:
             print(colored("[!] CUDA ACCELERATION IS UNAVAILABLE", "red"))
             print(colored("[!] Check your PyTorch installation, else performance will be poor", "red"))
 
-        self.model.conf = 0.45 # base confidence threshold (or base detection (0-1)
-        self.model.iou = 0.45 # NMS IoU (0-1)
+        self.model.conf = 0.001 # base confidence threshold (or base detection (0-1)
+        self.model.iou = 0.001 # NMS IoU (0-1)
         self.collect_data = collect_data
         self.mouse_delay = mouse_delay
         self.debug = debug
